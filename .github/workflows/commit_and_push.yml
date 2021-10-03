@@ -22,4 +22,4 @@ jobs:
           git config user.email ${{ secrets.GIT_EMAIL }}
           git add .
           git commit -m "Create"
-          git push origin HEAD:main
+          git push origin main
