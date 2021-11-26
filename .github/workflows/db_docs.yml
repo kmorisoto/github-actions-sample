@@ -29,3 +29,5 @@ jobs:
           git add .
           git commit -m "Create"
           gh pr create --title "Update Database docs" --body ":+1:"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
