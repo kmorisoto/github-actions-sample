@@ -19,14 +19,15 @@ jobs:
         run: docker-compose up -d
 
       - name: create file
-        run: docker run -u root -v "$PWD/docs/db:/output" --net="host" schemaspy/schemaspy:snapshot -t pgsql -host $(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):5432 -db postgres -u postgres -p password
+        run: |
+          rm -r docs/db
+          docker run -u root -v "$PWD/docs/db:/output" --net="host" schemaspy/schemaspy:snapshot -t pgsql -host $(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):5432 -db postgres -u postgres -p password
 
       - name: commit & push
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git switch -c docs/db
-          rm -r docs/db
           git add .
           git commit -m "Create"
           git push --set-upstream origin docs/db
