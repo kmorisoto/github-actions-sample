@@ -20,7 +20,7 @@ jobs:
 
       - name: create file
         run: |
-          rm -r docs/db
+          rm -rf docs/db
           docker run -u root -v "$PWD/docs/db:/output" --net="host" schemaspy/schemaspy:snapshot -t pgsql -host $(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):5432 -db postgres -u postgres -p password
 
       - name: commit & push
