@@ -25,6 +25,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git switch -c docs/db
           git add .
           git commit -m "Create"
-          git push origin main
+          gh pr create --title "Update Database docs" --body ":+1:"
