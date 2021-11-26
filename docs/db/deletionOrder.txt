@@ -1,3 +1,0 @@
-flyway_schema_history
-company_details
-companies
