@@ -9,8 +9,10 @@ on:
       - db/migration/**
 
 jobs:
-  create_file:
+  database_docs:
     runs-on: ubuntu-latest
+    env:
+      DOCS_DIR: docs/db
 
     steps:
       - uses: actions/checkout@v2.4.0
@@ -18,19 +20,23 @@ jobs:
       - name: run database
         run: docker-compose up -d
 
-      - name: create file
-        run: |
-          rm -rf docs/db
-          docker run -u root -v "$PWD/docs/db:/output" --net="host" schemaspy/schemaspy:snapshot -t pgsql -host $(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):5432 -db postgres -u postgres -p password
+      - name: clean docs
+        run: rm -rf ${{ env.DOCS_DIR }}
+
+      - name: run schemaspy
+        run: docker run -u root -v "$PWD/${{ env.DOCS_DIR }}:/output" --net="host" schemaspy/schemaspy:snapshot -t pgsql -host $(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):5432 -db postgres -u postgres -p password
 
       - name: commit & push
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git switch -c docs/db
-          git add .
-          git commit -m "Create"
-          git push --set-upstream origin docs/db
+          BRANCH=docs/db/$(date +%Y%m%d%H%M%S)
+          git switch -c $BRANCH
+          git add ${{ env.DOCS_DIR }}
+          git commit -m "Update database docs"
+          git push --set-upstream origin $BRANCH
           gh pr create --title "Update Database docs" --body ":+1:"
+          gh pr review --comment -b ":+1:"
+          gh pr merge --squash $BRANCH
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
