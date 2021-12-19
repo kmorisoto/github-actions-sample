@@ -39,10 +39,10 @@ jobs:
                   ]
                 }
               ],
-              "channel-id": "NEW_TARGET_CHANNEL_ID"
+              "channel-id": ${{ secrets.SLACK_CHANNEL_ID }}
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        values: |
-          button_text: ${{ github.sha }}
-          button_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          values: |
+            button_text: ${{ github.sha }}
+            button_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
