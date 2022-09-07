@@ -15,7 +15,7 @@ jobs:
       DOCS_DIR: docs/db
 
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3.0.2
 
       - name: run database
         run: docker-compose up -d
